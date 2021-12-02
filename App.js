@@ -1,13 +1,16 @@
+import { Buffer } from 'buffer';
 import React, { useEffect, useState } from 'react';
 import { Button, FlatList, StyleSheet, Switch, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 import BluetoothSerial from 'react-native-bluetooth-serial';
-
-
+global.Buffer = Buffer
 const App = () => {
 
   const [device, setDevice] = useState(null);
   const [isEnabled, setBluetoothEnabled] = useState(null);
   const [connectedDevice, setConnectedDevice] = useState(null);
+
+
+
   function bluetooth() {
     Promise.all([
       BluetoothSerial.isEnabled(),
@@ -45,7 +48,9 @@ const App = () => {
   }
 
   const relayOn = () =>{
-    BluetoothSerial.write("A00101A2")
+    let relayOnString = "A00101A2";
+    let buffer = Buffer.from(relayOnString, "hex");
+    BluetoothSerial.write(buffer)
       .then((res) => {
         console.log(res);
         ToastAndroid.showWithGravity(
@@ -64,7 +69,9 @@ const App = () => {
   } 
 
   const relayOff = () => {
-    BluetoothSerial.write("A00100A1")
+    let relayOnString = "A00100A1";
+    let buffer = Buffer.from(relayOnString, "hex");
+    BluetoothSerial.write(buffer)
       .then((res) => {
         console.log(res);
         ToastAndroid.showWithGravity(

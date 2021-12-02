@@ -8,7 +8,7 @@ const App = () => {
   const [device, setDevice] = useState(null);
   const [isEnabled, setBluetoothEnabled] = useState(null);
   const [connectedDevice, setConnectedDevice] = useState(null);
-
+  const [isRelayEnabled, setRelayBluetoothEnabled] = useState(false);
 
 
   function bluetooth() {
@@ -48,6 +48,7 @@ const App = () => {
   }
 
   const relayOn = () =>{
+    setRelayBluetoothEnabled(true);
     let relayOnString = "A00101A2";
     let buffer = Buffer.from(relayOnString, "hex");
     BluetoothSerial.write(buffer)
@@ -56,19 +57,24 @@ const App = () => {
         ToastAndroid.showWithGravity(
           'Successfully write to device',
           ToastAndroid.LONG,
-          ToastAndroid.BOTTOM
+          ToastAndroid.CENTER
         );
       })
       .catch((err) => {
         ToastAndroid.showWithGravity(
           err.message,
           ToastAndroid.LONG,
-          ToastAndroid.BOTTOM
+          ToastAndroid.CENTER
         );
       })
+
+      setTimeout(() => {
+        relayOff();
+      }, 2000);
   } 
 
   const relayOff = () => {
+    setRelayBluetoothEnabled(false);
     let relayOnString = "A00100A1";
     let buffer = Buffer.from(relayOnString, "hex");
     BluetoothSerial.write(buffer)
@@ -77,14 +83,14 @@ const App = () => {
         ToastAndroid.showWithGravity(
           'Successfully write to device',
           ToastAndroid.LONG,
-          ToastAndroid.BOTTOM
+          ToastAndroid.CENTER
         );
       })
       .catch((err) => {
         ToastAndroid.showWithGravity(
           err.message,
           ToastAndroid.LONG,
-          ToastAndroid.BOTTOM
+          ToastAndroid.CENTER
         );
       })
   } 
@@ -205,14 +211,27 @@ const App = () => {
       }
 
       <View style={{
+        backgroundColor: 'dodgerblue',
+        height: 50,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Text style={{
+          color:'white',
+          fontSize: 20,
+          fontWeight:'bold'
+        }}>{(isRelayEnabled) ? 'Relay is ON' : 'Relay is OFF'}</Text>
+      </View>
+      <View style={{
         backgroundColor:'whitesmoke',
         height:100,
         flexDirection:'row',
         alignItems: 'center',
         justifyContent: 'space-evenly'
       }}>
-        <Button title="Relay ON" color="green" onPress={() => relayOn()}/>
-        <Button title="Relay OFF" color="red" onPress={() => relayOff()}/>
+        <Button title="            OPEN            "
+         color="green" onPress={() => relayOn()}/>
       </View>
     </View>
   );
